@@ -2,4 +2,17 @@
 
 @import helper._
 
+<!DOCTYPE html>
+<html>
 
+<body>
+@form(action = routes.StoryTeller.submit) {
+    @inputText(storyForm("id"))
+    @inputText(storyForm("title"))
+    @helper.input(storyForm("body")) { (id, name, value, args) =>
+        <textarea rows="20" cols="20" name="@name" id="@id" @toHtmlArgs(args)></textarea>
+    }
+<input type="submit" value="Create"/>
+}
+</body>
+</html>

@@ -6,6 +6,7 @@ import models.Story
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import play.api.mvc.Action
+import persistence._
 
 /**
  * Date: 10/03/12
@@ -16,7 +17,7 @@ object StoryTeller extends Controller{
 
   val storyForm: Form[Story] = Form(
     mapping (
-      "id" → longNumber,
+      "id" → longNumber.verifying(_ > 0L),
       "title" → text.verifying(nonEmpty) ,
       "body" → text
     )(Story.apply)(Story.unapply)
@@ -29,7 +30,7 @@ object StoryTeller extends Controller{
   def submit = Action {implicit request =>
      storyForm.bindFromRequest.fold(
       errors => BadRequest(views.html.story(errors)),
-      story => Ok(views.html.viewStory(story))
+      story => Ok(views.html.viewStory(Mapper.stored(story)))
      )
   }
 
