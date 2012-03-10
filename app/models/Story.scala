@@ -5,6 +5,6 @@ package models
  * Time: 17:05
  */
 
-class Story {
+final case class Story(id: Long, title: String, body: String)
 
-}
+
