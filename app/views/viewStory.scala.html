@@ -1,0 +1,18 @@
+@(possibleStory: Option[Story])
+
+<!DOCTYPE html>
+<html>
+<body>
+@possibleStory.map{ story =>
+    <div id="id" class="id">
+        @story.id
+    </div>
+<div id="title" class="title">
+    @story.title
+</div>
+<div id="body" class="body">
+    @story.body
+</div>
+}
+</body>
+</html>
