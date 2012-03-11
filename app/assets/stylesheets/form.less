@@ -1,0 +1,56 @@
+@input-text-color: #781351;
+@field-border-color: #781351;
+
+
+.border(@border) {
+    border: 1px solid @border;
+}
+
+.color(@color) {
+    color: @color;
+}
+
+.input-decoration(@border, @color) {
+    .border(@border);
+    .color(@color)
+}
+
+label {
+    width: 4em;
+    float: left;
+    text-align: right;
+    margin-right: 0.5em;
+    display: block
+}
+
+.submit input {
+    margin-left: 4.5em;
+}
+
+input {
+    background: #fee3ad;
+    .input-decoration(@field-border-color, @input-text-color)
+}
+
+textarea {
+    background: #fee3ad;
+    .input-decoration(@field-border-color, @input-text-color)
+}
+
+.submit input {
+    color: #000;
+    background: #ffa20f;
+    border: 2px outset #d7b9c9
+}
+
+fieldset {
+    .border(@input-text-color);
+    width: 20em
+}
+
+legend {
+    color: #fff;
+    background: #ffa20c;
+    .border(@field-border-color);
+    padding: 2px 6px
+}
