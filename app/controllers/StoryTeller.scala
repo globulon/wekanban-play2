@@ -37,7 +37,7 @@ object StoryTeller extends Controller{
 
   def stories() = Action { implicit request =>
     request.headers.get(CONTENT_TYPE) match {
-      case Some("application/json") => Ok(Json.toJson(StoryMapper.allStories.get))
+      case Some("application/json") => Ok(Json.toJson(StoryMapper.allStories.getOrElse(List())))
       case _ => Ok(views.html.stories(StoryMapper.allStories))
     }
   }
