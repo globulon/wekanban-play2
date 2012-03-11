@@ -9,6 +9,18 @@ import play.api.libs.json._
 
 object DomainMarshallers {
 
+  implicit object StoriesFormat extends Format[List[Story]] {
+    def reads(json: JsValue) = null
+
+    def writes(list: List[Story]) = {
+      var result = for {
+        item ← list
+      } yield StoryFormat.writes(item)
+
+      JsArray(result.toSeq)
+  }
+  }
+
   implicit object StoryFormat extends Format[Story] {
     def reads(json: JsValue) = Story(
       (json \ "id").as[Long],

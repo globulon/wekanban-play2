@@ -1,12 +1,13 @@
 package controllers
 
-import play.api.mvc.Controller
 import play.api.data.Form
-import models.Story
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
-import play.api.mvc.Action
 import persistence._
+import play.api.libs.json.Json
+import play.api.mvc.{Controller, Action}
+import models.{DomainMarshallers, Story}
+import DomainMarshallers._
 
 /**
  * Date: 10/03/12
@@ -29,9 +30,20 @@ object StoryTeller extends Controller{
 
   def submit = Action {implicit request =>
      storyForm.bindFromRequest.fold(
-      errors => BadRequest(views.html.story(errors)),
-      story => Ok(views.html.viewStory(Mapper.stored(story)))
+       errors => BadRequest(views.html.story(errors)),
+       story => Ok(views.html.viewStory(StoryMapper.stored(story)))
      )
+  }
+
+  def stories() = Action { implicit request =>
+    request.headers.get(CONTENT_TYPE) match {
+      case Some("application/json") => Ok(Json.toJson(StoryMapper.allStories.getOrElse(List())))
+      case _ => Ok(views.html.stories(StoryMapper.allStories))
+    }
+  }
+
+  def allStories() = Action(parse.json) { implicit request =>
+     Ok(Json.toJson(StoryMapper.allStories))
   }
 
 }

@@ -1,0 +1,21 @@
+@(ostories: Option[List[Story]])
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+@ostories.map { stories =>
+<ul>
+    @stories.map { story =>
+    <li>
+        <span class="id">@story.id</span>
+        <span class="title">@story.title</span>
+        <span class="body">@story.body</span>
+    </li>
+    }
+</ul>
+}
+</body>
+</html>
