@@ -5,6 +5,7 @@ import play.api.data.Form
 import play.api.data.Forms._
 import models.User
 import persistence.UserMapper
+import play.api.Logger
 
 /**
  * Date: 12/03/12
@@ -29,6 +30,7 @@ object AuthKerberos extends Controller{
   }
 
   def submitRegistration() = Action { implicit request =>
+    Logger.info("submiting info")
     userForm.bindFromRequest.fold (
       errors => BadRequest(views.html.auth.login(errors)),
       user => {
@@ -39,6 +41,7 @@ object AuthKerberos extends Controller{
   }
 
   def register() = Action {
+    Logger.info("Want to register")
     Ok(views.html.auth.register(userForm))
   }
 }

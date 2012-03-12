@@ -25,7 +25,7 @@ object UserMapper {
   def store(user: User)= DB.withConnection{ implicit cnx =>
     SQL("insert into user (login, password) values ({login}, {password})")
       .on('login → user.login, 'password → user.password)
-        .executeInsert(userMapper.single)
+        .executeInsert()
   }
 
 
