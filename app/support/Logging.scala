@@ -8,9 +8,9 @@ import play.api.Logger
  * Time: 12:21
  */
 
-object ActionDecorators {
+object Logging {
 
-  def trace[A](f: Request[AnyContent] => Result) = {
+  def trace(f: Request[AnyContent] => Result) = {
     Action {
       request =>
         request.headers.toMap.foreach {
@@ -18,15 +18,6 @@ object ActionDecorators {
         }
         f(request)
 
-    }
-  }
-
-
-  def onSteroid[A](bd: BodyParser[A])(g: Request[A] => Unit)(f: Request[A] => Result) = {
-    Action(bd) {
-      request =>
-        g(request)
-        f(request)
     }
   }
 

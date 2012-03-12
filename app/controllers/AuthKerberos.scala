@@ -3,10 +3,11 @@ package controllers
 import play.api.mvc._
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.data.validation.Constraints._
 import models.User
-import persistence.UserMapper
 import persistence.UserMapper._
 import play.api.Logger
+import persistence.{StoryMapper, UserMapper}
 
 /**
  * Date: 12/03/12
@@ -17,8 +18,8 @@ object AuthKerberos extends Controller {
 
   val userForm: Form[User] = Form {
     mapping(
-      "login" → text,
-      "password" → text
+      "login" → text.verifying(nonEmpty).verifying(_.length < 17) ,
+      "password" → text.verifying(nonEmpty).verifying(_.length < 17)
     )(User.apply)(User.unapply)
   }
 
@@ -28,7 +29,7 @@ object AuthKerberos extends Controller {
 
   def authentify(user: User) = {
     UserMapper.find(user) match {
-      case Some(authentifiedUser) => Redirect(routes.StoryTeller.storiesForUser(authentifiedUser.id))
+      case Some(authentifiedUser) => Ok(views.html.stories(StoryMapper.userStories(authentifiedUser)))
         .withSession("user" -> authentifiedUser.login)
       case None => Unauthorized(views.html.auth.login(userForm))
     }

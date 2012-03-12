@@ -5,6 +5,8 @@ package models
  * Time: 17:05
  */
 
-final case class Story(id: Long, title: String, body: String)
+
+case class Story(id: Long, title: String, body: String, userId: Long)
+
 
 

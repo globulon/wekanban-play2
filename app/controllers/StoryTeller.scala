@@ -5,10 +5,9 @@ import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import persistence._
 import play.api.libs.json.Json
-import play.api.mvc.{Controller, Action}
-import models.{DomainMarshallers, Story}
-import DomainMarshallers._
-import support.Aknowledgment._
+import play.api.mvc.Controller
+import models.Story
+import support.Aknowledgement._
 
 /**
  * Date: 10/03/12
@@ -21,34 +20,27 @@ object StoryTeller extends Controller {
     mapping (
       "id" → longNumber.verifying(_ > 0L),
       "title" → text.verifying(nonEmpty) ,
-      "body" → text
+      "body" → text.verifying(nonEmpty),
+      "userId" → longNumber.verifying(_ == 0L)
     )(Story.apply)(Story.unapply)
   )
 
-  def newStory  = Authenticated { request =>
+  def newStory  = Authenticated { user => request =>
     Ok(views.html.story(storyForm))
   }
 
-  def submit = Authenticated {implicit request =>
+  def submit = Authenticated {user => implicit request =>
      storyForm.bindFromRequest.fold(
        errors => BadRequest(views.html.story(errors)),
-       story => Ok(views.html.viewStory(StoryMapper.stored(story)))
+       story => {
+         StoryMapper.stored(story)(user)
+         Ok(views.html.stories(StoryMapper.userStories(user)))
+       }
      )
   }
 
-  def stories() = Authenticated { implicit request =>
-    request.headers.get(ACCEPT) match {
-      case Some("application/json") => Ok(Json.toJson(StoryMapper.allStories.getOrElse(List())))
-      case _ => Ok(views.html.stories(StoryMapper.allStories))
-    }
-  }
-
-  def storiesForUser(id: Long) = Action { implicit request =>
-
-    request.headers.get(ACCEPT) match {
-      case Some("application/json") => Ok(Json.toJson(StoryMapper.storiesForUser(id).getOrElse(List())))
-      case _ => Ok(views.html.stories(StoryMapper.storiesForUser(id)))
-    }
+  def stories = Authenticated { user => implicit request =>
+    Ok(views.html.stories(StoryMapper.userStories(user)))
   }
 
 }

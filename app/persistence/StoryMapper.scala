@@ -1,12 +1,13 @@
 package persistence
 
-import models.Story
 import play.api.db.DB
 import play.api.Play.current
 import anorm._
 import anorm.SqlParser._
 import scalaz._
 import Scalaz._
+import models.{AuthentifiedUser, Story}
+
 /**
  * Date: 10/03/12
  * Time: 21:34
@@ -17,29 +18,22 @@ object  StoryMapper {
   val storyParser: RowParser[Option[Story]] = {
     get[Long]("id")~
     get[String]("title")~
-    get[String]("body") map {
-      case id~title~body => Some(Story(id, title, body))
+    get[String]("body")~
+    get[Long]("userId") map {
+      case id~title~body~userId => Some(Story(id, title, body, userId))
       case _ => None
     }
   }
 
-  def stored(story: Story): Option[Story] = DB.withConnection { implicit conn =>
-    SQL("insert into story(id, title, body) values({id}, {title}, {body})")
-    .on('id → story.id, 'title → story.title, 'body → story.body)
-    .executeInsert()
-    //TODO should send back answer asynchronously
-    SQL("select id, title, body from story where id = {id}")
-    .on('id → story.id).as(storyParser.singleOpt).flatMap{x: Option[Story] => x}
+  def stored(story: Story)(user: AuthentifiedUser) = DB.withConnection { implicit conx =>
+    SQL("insert into story(id, title, body, usr_id) values({id}, {title}, {body}, {userId})")
+      .on('id → story.id, 'title → story.title, 'body → story.body, 'userId → user.id)
+      .executeInsert()
   }
 
-
-  def allStories: Option[List[Story]] = DB.withConnection{ implicit connection =>
-    SQL("select id, title, body from story").as(storyParser *).sequence
-  }
-
-  def storiesForUser(id: Long) = DB.withConnection{ implicit connection =>
-    SQL("select id, title, body from story, user where user.id = story.usr_id and usr_id = {id}")
-      .on('id → id)
+  def userStories(implicit user: AuthentifiedUser) = DB.withConnection{ implicit connection =>
+    SQL("select id, title, body, usr_id from story, user where user.id = story.usr_id and usr_id = {id}")
+      .on('id → user.id)
         .as(storyParser *).sequence
   }
 
