@@ -12,8 +12,10 @@ GET    /register              controllers.AuthKerberos.register
 POST   /register              controllers.AuthKerberos.submitRegistration
 
 GET    /story                 controllers.StoryTeller.newStory
-GET    /stories               controllers.StoryTeller.stories
+#GET    /stories               controllers.StoryTeller.stories
 POST   /story                 controllers.StoryTeller.submit
+
+GET   /user/:id/stories       controllers.StoryTeller.storiesForUser(id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file           controllers.Assets.at(path="/public", file)

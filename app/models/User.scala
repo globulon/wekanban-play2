@@ -1,8 +1,13 @@
 package models
 
 /**
- * Date: 12/03/12
- * Time: 11:25
+ * Date:s12String
+ *Option[AbstractTypeB]me: 11:25
  */
 
-final case class User(login: String, password: String)
+
+
+case class User(login: String, password: String)
+final case class AuthentifiedUser(id: Long, override val login: String, override val password: String)
+  extends User (login, password)
+

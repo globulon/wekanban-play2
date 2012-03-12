@@ -13,6 +13,7 @@ import Scalaz._
  */
 
 object  StoryMapper {
+
   val storyParser: RowParser[Option[Story]] = {
     get[Long]("id")~
     get[String]("title")~
@@ -24,15 +25,22 @@ object  StoryMapper {
 
   def stored(story: Story): Option[Story] = DB.withConnection { implicit conn =>
     SQL("insert into story(id, title, body) values({id}, {title}, {body})")
-      .on('id → story.id, 'title → story.title, 'body → story.body)
-        .executeInsert()
+    .on('id → story.id, 'title → story.title, 'body → story.body)
+    .executeInsert()
     //TODO should send back answer asynchronously
     SQL("select id, title, body from story where id = {id}")
-      .on('id → story.id).as(storyParser.singleOpt).flatMap{x: Option[Story] => x}
+    .on('id → story.id).as(storyParser.singleOpt).flatMap{x: Option[Story] => x}
   }
 
 
   def allStories: Option[List[Story]] = DB.withConnection{ implicit connection =>
-     SQL("select id, title, body from story").as(storyParser *).sequence
+    SQL("select id, title, body from story").as(storyParser *).sequence
   }
+
+  def storiesForUser(id: Long) = DB.withConnection{ implicit connection =>
+    SQL("select id, title, body from story, user where user.id = story.usr_id and usr_id = {id}")
+      .on('id → id)
+        .as(storyParser *).sequence
+  }
+
 }
