@@ -25,4 +25,12 @@ object AuthKerberos extends Controller{
   def submitLogin() = Action {
     Redirect(routes.StoryTeller.stories())
   }
+
+  def submitRegistration = Action {
+    Redirect(routes.StoryTeller.stories())
+  }
+
+  def register() = Action {
+    Ok(views.html.auth.register(userForm))
+  }
 }
