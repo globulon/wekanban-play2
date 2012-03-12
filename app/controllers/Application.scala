@@ -10,8 +10,6 @@ import play.api.mvc._
 object Application  extends Controller {
 
   def index = Action {
-    Ok(views.html.index("Welcome to weKanban"))
+    Redirect(routes.AuthKerberos.login())
   }
-
-
 }
