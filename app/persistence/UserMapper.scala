@@ -32,13 +32,14 @@ object UserMapper {
   def find(user: User) = DB.withConnection{ implicit cnx =>
     SQL("select id, login, password from user where login = {name} and password = {password}")
       .on('name -> user.login, 'password -> user.password)
-      .as[Option[AuthentifiedUser]](userMapper.single)
+      .as(userMapper *).sequence
   }
 
-  def findByLogin(name: String) = DB.withConnection{ implicit cnx =>
+  def findByLogin(name: String): Option[AuthentifiedUser] = DB.withConnection{ implicit cnx =>
     SQL("select id, login, password from user where login = {name}")
       .on('name -> name)
-      .as[Option[AuthentifiedUser]](userMapper.single)
+      .as[Option[Option[AuthentifiedUser]]](userMapper.singleOpt)
+        .flatMap{x: Option[AuthentifiedUser] => x}
   }
 
 

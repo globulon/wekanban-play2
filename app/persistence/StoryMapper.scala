@@ -19,7 +19,7 @@ object  StoryMapper {
     get[Long]("id")~
     get[String]("title")~
     get[String]("body")~
-    get[Long]("userId") map {
+    get[Long]("usr_id") map {
       case id~title~body~userId => Some(Story(id, title, body, userId))
       case _ => None
     }
@@ -32,7 +32,7 @@ object  StoryMapper {
   }
 
   def userStories(implicit user: AuthentifiedUser) = DB.withConnection{ implicit connection =>
-    SQL("select id, title, body, usr_id from story, user where user.id = story.usr_id and usr_id = {id}")
+    SQL("select story.id, title, body, usr_id from story, user where user.id = story.usr_id and usr_id = {id}")
       .on('id → user.id)
         .as(storyParser *).sequence
   }

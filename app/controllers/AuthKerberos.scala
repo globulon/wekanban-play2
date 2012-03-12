@@ -28,10 +28,11 @@ object AuthKerberos extends Controller {
   }
 
   def authentify(user: User) = {
+    Logger.info("found: " + UserMapper.find(user))
     UserMapper.find(user) match {
-      case Some(authentifiedUser) => Ok(views.html.stories(StoryMapper.userStories(authentifiedUser)))
+      case Some(List(authentifiedUser)) => Ok(views.html.stories(StoryMapper.userStories(authentifiedUser)))
         .withSession("user" -> authentifiedUser.login)
-      case None => Unauthorized(views.html.auth.login(userForm))
+      case _ => Unauthorized(views.html.auth.register(userForm))
     }
   }
 

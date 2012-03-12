@@ -16,7 +16,7 @@ CREATE TABLE story (
     id integer NOT NULL DEFAULT nextval('story_id_seq'),
     title varchar(255) not null ,
     body varchar(2048) not null ,
-    usr_id numeric not null references user(id),
+    usr_id integer not null references user(id),
     primary key (id)
 );
 
