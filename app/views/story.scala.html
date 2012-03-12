@@ -13,6 +13,7 @@
 @form(action = routes.StoryTeller.submit) {
     @inputText(storyForm("id"))
     @inputText(storyForm("title"))
+    <input type="hidden" value="0" name="userId" id="userId"/>
     @helper.input(storyForm("body")) { (id, name, value, args) =>
         <textarea rows="20" cols="20" name="@name" id="@id" @toHtmlArgs(args)></textarea>
     }
