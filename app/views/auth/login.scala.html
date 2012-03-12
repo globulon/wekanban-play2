@@ -1,0 +1,22 @@
+@(userForm: Form[models.User])
+
+@import helper._
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/form.css")"/>
+</head>
+
+<body>
+<fieldset>
+    <legend>Please login</legend>
+    @form(action = routes.AuthKerberos.submitLogin) {
+        @inputText(userForm("login"))
+        @inputText(userForm("password"))
+        <input type="submit" value="Login!"/>
+    }
+</fieldset>
+</body>
+
+</html>

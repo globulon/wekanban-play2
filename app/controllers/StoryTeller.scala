@@ -14,7 +14,7 @@ import DomainMarshallers._
  * Time: 18:46
  */
 
-object StoryTeller extends Controller{
+object StoryTeller extends Controller {
 
   val storyForm: Form[Story] = Form(
     mapping (
@@ -36,12 +36,12 @@ object StoryTeller extends Controller{
   }
 
   def stories() = Action { implicit request =>
-    request.headers.get(CONTENT_TYPE) match {
+    request.headers.get(ACCEPT) match {
       case Some("application/json") => Ok(Json.toJson(StoryMapper.allStories.getOrElse(List())))
       case _ => Ok(views.html.stories(StoryMapper.allStories))
     }
   }
-
+                                               1
   def allStories() = Action(parse.json) { implicit request =>
      Ok(Json.toJson(StoryMapper.allStories))
   }

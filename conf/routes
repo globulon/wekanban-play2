@@ -5,6 +5,9 @@
 # Home page
 GET     /                     controllers.Application.index
 
+GET    /login                 controllers.AuthKerberos.login
+POST   /login                 controllers.AuthKerberos.submitLogin
+
 GET    /story                 controllers.StoryTeller.newStory
 GET    /stories               controllers.StoryTeller.stories
 POST   /story                 controllers.StoryTeller.submit
